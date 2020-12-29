@@ -26,7 +26,7 @@ class Post(models.Model):
     class Meta:
         ordering = ['caption']
 
-class Image(models.Model):
+class Comment(models.Model):
     comment= models.CharField(max_length =30)
     date_posted = models.DateTimeField(auto_now_add=True)
     post = models.ForeignKey(
