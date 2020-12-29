@@ -3,11 +3,13 @@ from django.http import HttpResponse, Http404,HttpResponseRedirect
 import datetime as dt
 from .models import Post,Comment
 from django.contrib.auth.decorators import login_required
-from .forms import NewPostForm, NewsCommentForm
+from .forms import NewPostForm, NewCommentForm
 
 @login_required(login_url='/accounts/login/')
 def insta(request):
-    return render(request, 'index.html')
+    posts = Post.objects.all()
+    return render(request, 'index.html', {"posts": posts})
+
 
 @login_required(login_url='/accounts/login/')
 def new_post(request):
@@ -16,9 +18,9 @@ def new_post(request):
         form = NewPostForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
-            post.editor = current_user
+            post.user = current_user
             post.save()
-        return redirect('NewsToday')
+        return redirect('insta')
 
     else:
         form = NewPostForm()
