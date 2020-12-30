@@ -48,6 +48,9 @@ class Comment(models.Model):
     def update_post(cls, id ,comment):
         update = cls.objects.filter(id = id).update(comment = comment)
     
-
+    @classmethod
+    def get_comments_by_post(cls, id):
+        comments = Comments.objects.filter(post__pk = id)
+        return comments
     class Meta:
         ordering = ['comment']

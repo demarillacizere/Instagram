@@ -7,8 +7,22 @@ from .forms import NewPostForm, NewCommentForm
 
 @login_required(login_url='/accounts/login/')
 def insta(request):
+    new_comment = None
+    current_user = request.user
+    if request.method == 'POST':
+        form = NewCommentForm(request.POST)
+        if form.is_valid():
+            new_comment = form.save(commit=False)
+            new_comment.user = current_user
+            new_comment.save()
+            return redirect('insta')
+    else:
+        form = NewCommentForm()
+    date = dt.date.today()
     posts = Post.objects.all()
-    return render(request, 'index.html', {"posts": posts})
+    for post in posts:
+        comments = Comment.objects.all().order_by('-date_posted')
+    return render(request, 'index.html', {"posts": posts, "form": form,'comments':comments})
 
 
 @login_required(login_url='/accounts/login/')
