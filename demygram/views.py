@@ -30,7 +30,7 @@ def new_post(request):
 @login_required(login_url='/accounts/login/')
 def single_post(request, post_id):
     post = Post.objects.get(pk=post_id)
-    comments = Comment.get_comments_by_post(post_id)
+    comments = Comment.get_comments_by_post(post_id).order_by('-date_posted')
     current_user = request.user
     if request.method == 'POST':
         form = NewCommentForm(request.POST)
@@ -39,7 +39,7 @@ def single_post(request, post_id):
             new_comment.user = current_user
             new_comment.post = post
             new_comment.save()
-            return redirect('single_post',post_id=post.id)
+            return redirect('single_post',post_id=post_id)
     else:
         form = NewCommentForm()
         

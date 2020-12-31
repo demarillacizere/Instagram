@@ -38,10 +38,10 @@ class Comment(models.Model):
     def __str__(self):
         return self.comment
 
-    def save_image(self):
+    def save_comment(self):
         self.save()
 
-    def delete_image(self):
+    def delete_comment(self):
         self.delete()
     
     @classmethod
