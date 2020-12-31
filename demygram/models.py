@@ -50,7 +50,7 @@ class Comment(models.Model):
     
     @classmethod
     def get_comments_by_post(cls, id):
-        comments = Comments.objects.filter(post__pk = id)
+        comments = Comment.objects.filter(post__pk = id)
         return comments
     class Meta:
         ordering = ['comment']

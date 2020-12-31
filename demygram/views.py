@@ -7,22 +7,9 @@ from .forms import NewPostForm, NewCommentForm
 
 @login_required(login_url='/accounts/login/')
 def insta(request):
-    new_comment = None
-    current_user = request.user
-    if request.method == 'POST':
-        form = NewCommentForm(request.POST)
-        if form.is_valid():
-            new_comment = form.save(commit=False)
-            new_comment.user = current_user
-            new_comment.save()
-            return redirect('insta')
-    else:
-        form = NewCommentForm()
-    date = dt.date.today()
     posts = Post.objects.all()
-    for post in posts:
-        comments = Comment.objects.all().order_by('-date_posted')
-    return render(request, 'index.html', {"posts": posts, "form": form,'comments':comments})
+    comments = Comment.objects.all()
+    return render(request, 'index.html', {"posts": posts, 'comments':comments})
 
 
 @login_required(login_url='/accounts/login/')
@@ -39,3 +26,21 @@ def new_post(request):
     else:
         form = NewPostForm()
     return render(request, 'new_post.html', {"form": form})
+
+@login_required(login_url='/accounts/login/')
+def single_post(request, post_id):
+    post = Post.objects.get(pk=post_id)
+    comments = Comment.get_comments_by_post(post_id)
+    current_user = request.user
+    if request.method == 'POST':
+        form = NewCommentForm(request.POST)
+        if form.is_valid():
+            new_comment = form.save(commit=False)
+            new_comment.user = current_user
+            new_comment.post = post
+            new_comment.save()
+            return redirect('single_post',post_id=post.id)
+    else:
+        form = NewCommentForm()
+        
+    return render(request, 'post.html', {'post':post, 'form':form,'comments':comments})    

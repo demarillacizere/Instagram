@@ -1,0 +1,30 @@
+{%extends 'base.html'%}
+{% load static%}
+{% block content %}
+{% load bootstrap3 %}
+{{block.super}}
+
+<div class="container">
+    <div class="row" id='gallery'>
+         <div class="col-xs-11 col-sm-8 col-md-8 col-lg-8">
+            <img src="{{post.post_image.url}}" width='100%' href="" class="post" alt="post" >
+            <div><i class="far fa-heart"></i> <i class="far fa-comment"></i></div>
+         <br>
+        {% for comment in comments %}
+        <div class='panel'>
+            {{comment.user.username}} {{comment.comment}} {{comment.date_posted|timesince}} ago
+        </div>
+        {% endfor %}
+        <div class="container-fluid">
+        <form  action="{%url 'insta'%}" method="post">
+            {%csrf_token%}
+        
+            {% bootstrap_form form layout='inline' %}
+            <input type="submit" value="Post">
+        </form>
+        
+        </div>
+    </div>
+ 
+
+    {% endblock%}

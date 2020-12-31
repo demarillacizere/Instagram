@@ -110,15 +110,7 @@
                  </div>
                  {% endif %}
                  {% endfor %}
-                 <div class="container-fluid">
-                    <form  action="{%url 'insta'%}" method="post">
-                      {%csrf_token%}
-                  
-                      {% bootstrap_form form layout='inline' %}
-                      <input type="submit" value="Post">
-                    </form>
-                  
-                  </div>
+                 <div><a href="{% url 'single_post' post_id=post.id %}">Add a comment </a></div>
              </div>
     {% empty %}
     </div>
