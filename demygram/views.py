@@ -7,7 +7,7 @@ from .forms import NewPostForm, NewCommentForm
 
 @login_required(login_url='/accounts/login/')
 def insta(request):
-    posts = Post.objects.all()
+    posts = Post.objects.order_by('-date_posted')
     comments = Comment.objects.all()
     return render(request, 'index.html', {"posts": posts, 'comments':comments})
 
