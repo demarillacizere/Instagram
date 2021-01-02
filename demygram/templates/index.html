@@ -97,12 +97,18 @@
                          <a class="img-overlay" data-toggle="modal" data-target="#{{post.id}}" style="width:100%">
                              <img src="{{post.post_image.url}}" width='100%' href="" class="post" alt="post" >
                              <div class="overlay">
-                                <h4><i class="fas fa-heart"></i> <i class="fas fa-comment"></i></h4>
+                                <h4 class="fas fa-heart">{{post.like}}</i><i class="fas fa-comment"></i></h4>
                              </div>
                          </a>
                      </div>
                  </div>
-                 <span><i class="far fa-heart"></i> <i class="far fa-comment"></i></span>
+                 <span>
+                    <form action="{%url 'insta' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="post" value="{{post.id}}">
+                        <button class="btn btn-danger" id="heart2" type="submit"><i
+                                class="fas fa-heart"> {{post.like}}</i></button>
+                    </form></button> <i class="far fa-comment"></i></span>
                  {% for comment in comments %}
                  {% if comment.post.id == post.id %}
                  <div class='panel'>

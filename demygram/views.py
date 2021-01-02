@@ -9,6 +9,13 @@ from .forms import NewPostForm, NewCommentForm
 def insta(request):
     posts = Post.objects.order_by('-date_posted')
     comments = Comment.objects.all()
+    if request.method=='POST' and 'post' in request.POST:
+        posted=request.POST.get("post")
+        for post in posts:
+            if (int(post.id)==int(posted)):
+                post.like+=1
+                post.save()
+        return redirect('insta')
     return render(request, 'index.html', {"posts": posts, 'comments':comments})
 
 
