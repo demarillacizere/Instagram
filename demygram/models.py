@@ -35,9 +35,9 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
         )
     user = models.ForeignKey(User,on_delete=models.CASCADE)
-
+    count = models.IntegerField(default=0)
     def __str__(self):
-        return self.comment
+        return self.user
 
     def save_comment(self):
         self.save()
@@ -55,3 +55,10 @@ class Comment(models.Model):
         return comments
     class Meta:
         ordering = ['comment']
+
+class Following(models.Model):
+    username = models.CharField(blank=True,max_length = 255)
+    followed = models.CharField(blank=True,max_length = 255)
+
+    def __str__(self):
+        return f'{self.username}'
