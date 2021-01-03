@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse, Http404,HttpResponseRedirect
 import datetime as dt
-from .models import Post,Comment
+from .models import Post,Comment,Follow
 from django.contrib.auth.decorators import login_required
 from .forms import NewPostForm, NewCommentForm
 from django.contrib.auth.models import User
@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 def insta(request):
     users = User.objects.all()
     posts = Post.objects.order_by('-date_posted')
+    follows = Follow.objects.all()
     for post in posts:
         count = Comment.get_comments_by_post(post.id).count
     comments = Comment.objects.all()
@@ -28,7 +29,7 @@ def insta(request):
                 post.like+=1
                 post.save()
         return redirect('insta')
-    return render(request, 'index.html', {"posts": posts, 'comments':comments, 'count':count,'users':users})
+    return render(request, 'index.html', {"posts": posts, 'comments':comments, 'count':count,'users':users,'follows':follows})
 
 
 @login_required(login_url='/accounts/login/')
@@ -64,3 +65,12 @@ def single_post(request, post_id):
         form = NewCommentForm()
         
     return render(request, 'post.html', {'post':post, 'form':form,'comments':comments,'count':count})    
+
+def follow(request,operation,id):
+    current_user=User.objects.get(id=id)
+    if operation=='follow':
+        Follow.follow(request.user,current_user)
+        return redirect('insta')
+    elif operation=='unfollow':
+        Follow.unfollow(request.user,current_user)
+        return redirect('insta')

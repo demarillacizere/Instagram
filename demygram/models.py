@@ -3,6 +3,25 @@ import datetime as dt
 from tinymce.models import HTMLField
 from django.contrib.auth.models import User
 
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE,null=True)
+    profile_photo= models.ImageField(upload_to='profiles/',null=True)
+    bio= models.CharField(max_length=240, null=True)
+
+
+    def save_profile(self):
+        self.save()
+
+    @classmethod
+    def get_profile(cls):
+        profile = Profile.objects.all()
+        return profile
+
+    @classmethod
+    def find_profile(cls,search_term):
+        profile = Profile.objects.filter(user__username__icontains=search_term)
+        return profile
+
 class Post(models.Model):
     post_image = models.ImageField(upload_to = 'posts/')
     caption = models.TextField()
@@ -56,9 +75,16 @@ class Comment(models.Model):
     class Meta:
         ordering = ['comment']
 
-class Following(models.Model):
-    username = models.CharField(blank=True,max_length = 255)
-    followed = models.CharField(blank=True,max_length = 255)
+class Follow(models.Model):
+    users=models.ManyToManyField(User,related_name='follow')
+    current_user=models.ForeignKey(User,on_delete= models.CASCADE, related_name='c_user')
 
-    def __str__(self):
-        return f'{self.username}'
+    @classmethod
+    def follow(cls,current_user,new):
+        friends,created=cls.objects.get_or_create(current_user=current_user)
+        friends.users.add(new)
+
+    @classmethod
+    def unfollow(cls,current_user,new):
+        friends,created=cls.objects.get_or_create(current_user=current_user)
+        friends.users.remove(new)

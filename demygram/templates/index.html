@@ -45,9 +45,16 @@
         <div class='col-xs-4 col-sm-4 col-md-4 col-lg-4' id='suggestions'>
         <h5>Suggestions</h5>
         {% for user in users%}
-        <span>{{user.username}} <button class='btn'><a href=''>Follow</a></button></span><br>
+        {% if user != request.user %}
+        <span>{{user.username}} <button class='btn'><a href="/follow/follow/{{user.id}}/" >Follow</a></button></span><br>
+        {% endif %}
         {% endfor%}
         </div>
+        {% for follow in follows %}
+        <p>{{user.follow.all.username}}</p>
+        <span class="font-weight-bold">{{user.follow.all | length}}</span> Followers <br><br>
+        <span class="font-weight-bold">{{user.user.c_user.all | length}}</span> Following
+        {% endfor%}
 </div>
 </div>
 
