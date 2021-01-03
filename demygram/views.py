@@ -4,9 +4,11 @@ import datetime as dt
 from .models import Post,Comment
 from django.contrib.auth.decorators import login_required
 from .forms import NewPostForm, NewCommentForm
+from django.contrib.auth.models import User
 
 @login_required(login_url='/accounts/login/')
 def insta(request):
+    users = User.objects.all()
     posts = Post.objects.order_by('-date_posted')
     for post in posts:
         count = Comment.get_comments_by_post(post.id).count
@@ -26,7 +28,7 @@ def insta(request):
                 post.like+=1
                 post.save()
         return redirect('insta')
-    return render(request, 'index.html', {"posts": posts, 'comments':comments, 'count':count})
+    return render(request, 'index.html', {"posts": posts, 'comments':comments, 'count':count,'users':users})
 
 
 @login_required(login_url='/accounts/login/')
@@ -49,6 +51,7 @@ def single_post(request, post_id):
     post = Post.objects.get(pk=post_id)
     comments = Comment.get_comments_by_post(post_id).order_by('-date_posted')
     current_user = request.user
+    count = Comment.get_comments_by_post(post_id).count
     if request.method == 'POST':
         form = NewCommentForm(request.POST)
         if form.is_valid():
@@ -60,4 +63,4 @@ def single_post(request, post_id):
     else:
         form = NewCommentForm()
         
-    return render(request, 'post.html', {'post':post, 'form':form,'comments':comments})    
+    return render(request, 'post.html', {'post':post, 'form':form,'comments':comments,'count':count})    

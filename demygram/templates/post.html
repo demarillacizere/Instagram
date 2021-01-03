@@ -8,7 +8,7 @@
     <div class="row" id='gallery'>
          <div class="col-xs-11 col-sm-8 col-md-8 col-lg-8">
             <img src="{{post.post_image.url}}" width='100%' href="" class="post" alt="post" >
-            <div><i class="far fa-heart"></i> <i class="far fa-comment"></i></div>
+            <div><i class="far fa-heart">{{post.like}}</i><i class="far fa-comment">{{count}}</i></div>
          <br>
         {% for comment in comments %}
         <div class='panel'>
