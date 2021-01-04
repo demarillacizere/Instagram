@@ -5,9 +5,14 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^$',views.insta,name='insta'),
+    url(r'^$',views.signup, name='signup'),
     url(r'^new/post$', views.new_post, name='new-post'),
+    url(r'^add/profile/$',views.add_profile,name = 'add_profile'),
+    url(r'^my_profile/$',views.my_profile,name = 'my_profile'),
+    url(r'^search/', views.search_results, name='search_results'),
+    url(r'^profile/(\d+)',views.profile,name = 'profile'),
     url(r'^post(?P<post_id>\d+)', views.single_post, name='single_post'),
-    url(r'^follow/(?P<operation>.+)/(?P<id>\d+)',views.follow,name='follow'),
+    url(r'^follow/(\d+)',views.follow,name = 'follow'),
 ]
 if settings.DEBUG:
     urlpatterns+= static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

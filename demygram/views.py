@@ -1,45 +1,71 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse, Http404,HttpResponseRedirect
 import datetime as dt
-from .models import Post,Comment,Follow
+from .models import Post,Comment,Follow,Profile
 from django.contrib.auth.decorators import login_required
 from .forms import NewPostForm, NewCommentForm
 from django.contrib.auth.models import User
 
+def signup(request):
+    if request.user.is_authenticated():
+        return redirect('home')
+    else:
+        if request.method == 'POST':
+            form = SignupForm(request.POST)
+            if form.is_valid():
+                user = form.save(commit=False)
+                user.save()
+                new_profile = Profile(user=user)
+        else:
+            form = SignupForm()
+    return render(request, 'registration/registration_form.html',{'form':form})
+
+
 @login_required(login_url='/accounts/login/')
 def insta(request):
     users = User.objects.all()
-    posts = Post.objects.order_by('-date_posted')
-    follows = Follow.objects.all()
-    for post in posts:
-        count = Comment.get_comments_by_post(post.id).count
+    current_user = request.user
+    follows = Follow.get_followers(current_user)
+    follow = None
     comments = Comment.objects.all()
-    if request.method=='POST' and 'comment' in request.POST:
-        comment=Comment(comment=request.POST.get("comment"),
-                        post=int(request.POST.get("post")),
-                        user=request.POST.get("user"),
-                        count=0)
-        comment.save()
-        comment.count=F('count')+1
-        return redirect('insta')
-    elif request.method=='POST' and 'post' in request.POST:
-        posted=request.POST.get("post")
-        for post in posts:
-            if (int(post.id)==int(posted)):
-                post.like+=1
-                post.save()
-        return redirect('insta')
-    return render(request, 'index.html', {"posts": posts, 'comments':comments, 'count':count,'users':users,'follows':follows})
+    posts = None
+    if follows == None:
+        message = 'Please follow a user to see their latest posts on your timeline'
+        return render(request, 'index.html', {"message": message, "user": current_user,'users':users})
+
+    else:
+        for follow in follows:
+            posts = Post.get_posts_by_id(follow.profile_id)
+            print(posts)
+            for post in posts:
+                if request.method=='POST' and 'comment' in request.POST:
+                    comment=Comment(comment=request.POST.get("comment"),
+                                    post=int(request.POST.get("post")),
+                                    user=request.POST.get("user"),
+                                    count=0)
+                    comment.save()
+                    comment.count=F('count')+1
+                    return redirect('insta')
+                elif request.method=='POST' and 'post' in request.POST:
+                    posted=request.POST.get("post")
+                    for post in posts:
+                        if (int(post.id)==int(posted)):
+                            post.like+=1
+                            post.save()
+                    return redirect('insta')
+        return render(request, 'index.html', {"posts": posts, 'comments':comments,'users':users,'follow':follow,'user':current_user})
 
 
 @login_required(login_url='/accounts/login/')
 def new_post(request):
     current_user = request.user
+    profile = Profile.get_profile(current_user)
     if request.method == 'POST':
         form = NewPostForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
             post.user = current_user
+            post.profile = profile
             post.save()
         return redirect('insta')
 
@@ -66,11 +92,45 @@ def single_post(request, post_id):
         
     return render(request, 'post.html', {'post':post, 'form':form,'comments':comments,'count':count})    
 
-def follow(request,operation,id):
-    current_user=User.objects.get(id=id)
-    if operation=='follow':
-        Follow.follow(request.user,current_user)
-        return redirect('insta')
-    elif operation=='unfollow':
-        Follow.unfollow(request.user,current_user)
-        return redirect('insta')
+@login_required(login_url='/accounts/login/')
+def my_profile(request):
+    current_user = request.user
+    profile = Profile.objects.filter(user=current_user)
+    if profile == None:
+        return redirect('add_profile')
+    else:
+        posts = Post.get_posts_by_id(profile.id)
+        return render(request, 'profile.html', {"posts": posts, "profile": profile})
+
+@login_required(login_url='/accounts/login/')
+def search_results(request):
+    if 'user' in request.GET and request.GET["user"]:
+        profile = None
+        search_term = request.GET.get("user")
+        current_user = User.objects.filter(username__icontains = search_term)
+        for item in current_user:
+            profile = Profile.get_many_profiles(item)
+            print(item)
+        message = f"{search_term}"
+        
+        return render(request, 'search.html',{"results": profile, "user": current_user, "message":message})
+
+    else:
+        message = "You haven't searched for any term"
+        return render(request, 'search.html',{"message":message})
+
+@login_required(login_url='/accounts/login/')
+def profile(request, profile_id):
+    profile = Profile.get_profile_id(profile_id)
+    posts = Post.filter(profile=profile.id)
+    return render(request, 'user_profile.html', {"posts": posts, "profile": profile})
+
+
+@login_required(login_url='/accounts/login/')
+def follow(request, profile_id):
+    current_user = request.user
+    profile = Profile.get_profile_id(profile_id)
+    follow_user = Follow(user=current_user, profile=profile)
+    follow_user.save()
+    myprofile_id= str(profile.id)
+    return redirect('insta')

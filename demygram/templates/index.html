@@ -10,6 +10,7 @@
         }
 </style>
 <div class="container">
+    <div>{{message}}</div>
     <div class="row" id='timeline'>
         <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
             {% for post in posts %}
@@ -22,7 +23,7 @@
                             {% csrf_token %}
                             <input type="hidden" name="post" value="{{post.id}}">
                             <button class='btn' type='submit'><i class="fas fa-heart"> {{post.like}}</i></button>
-                            <button class='btn'><i class="fas fa-comment">{{count}}</i></button>
+                            <button class='btn'><i class="fas fa-comment"></i></button>
                         </form>
                     </div>
                     <div><b>{{post.user}}</b> {{post.caption}} <span style='text-align:right;'>{{post.date_posted|timesince}} ago</span></div><br>
@@ -36,22 +37,15 @@
                 </div>
                     <div class='card-footer'><a href="{% url 'single_post' post_id=post.id %}">Add a comment </a></div>
              </div><br><br>
-            {% empty %}
-            <img src="{% static 'posts/sorry.png' %}" alt="" class="oops">
-            <div class="col-sm-6 col-md-6 col-lg-6">
-            <h2 class="text-center"> Sorry no posts yet.</h2>
-            </div>
             {% endfor %}</div>
         <div class='col-xs-4 col-sm-4 col-md-4 col-lg-4' id='suggestions'>
         <h5>Suggestions</h5>
-        {% for user in users%}
+        {% for user in users %}
         {% if user != request.user %}
-        <span>{{user.username}} <button class='btn'><a href="/follow/follow/{{user.id}}/" >Follow</a></button></span><br>
+        <span>{{user.username}} <button class='btn'><button type="button" class="btn btn-outline-primary"><a href="{%url 'follow' user.id %}">Follow</a></button></span><br>
         {% endif %}
         {% endfor%}
         </div>
-        <span class="font-weight-bold">{{request.user.follow.all| length}}</span>Followers<br>
-        <span class="font-weight-bold">{{request.user.user.c_user.all | length}}</span> Following
 </div>
 </div>
 

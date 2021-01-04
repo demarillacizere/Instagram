@@ -13,8 +13,13 @@ class Profile(models.Model):
         self.save()
 
     @classmethod
-    def get_profile(cls):
-        profile = Profile.objects.all()
+    def get_profile(cls, user):
+        profile = cls.objects.filter(user=user).first()
+        return profile
+
+    @classmethod
+    def get_profile_id(cls, user):
+        profile = cls.objects.get(pk =user)
         return profile
 
     @classmethod
@@ -22,12 +27,16 @@ class Profile(models.Model):
         profile = Profile.objects.filter(user__username__icontains=search_term)
         return profile
 
+    class Meta:
+        ordering = ['user']
+
 class Post(models.Model):
     post_image = models.ImageField(upload_to = 'posts/')
     caption = models.TextField()
     location = models.TextField()
     date_posted = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile,on_delete=models.CASCADE,null = True)
     like = models.IntegerField(default=0)
     def __str__(self):
         return self.caption
@@ -42,6 +51,10 @@ class Post(models.Model):
     def update_post(cls, id ,post_image, caption , location):
         update = cls.objects.filter(id = id).update(post_image = post_image, caption = caption ,location = location)
     
+    @classmethod
+    def get_posts_by_id(cls, id):
+        posts = cls.objects.filter(profile = id).all()
+        return posts
 
     class Meta:
         ordering = ['caption']
@@ -81,5 +94,8 @@ class Follow(models.Model):
 
     @classmethod
     def get_followers(cls, user):
-        followers = cls.objects.filter(user=user).first()
+        followers = cls.objects.filter(user=user).all()
         return followers
+
+    class Meta:
+        ordering = ['user']
