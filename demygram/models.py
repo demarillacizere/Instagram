@@ -76,15 +76,10 @@ class Comment(models.Model):
         ordering = ['comment']
 
 class Follow(models.Model):
-    users=models.ManyToManyField(User,related_name='follow')
-    current_user=models.ForeignKey(User,on_delete= models.CASCADE, related_name='c_user')
+    user = models.ForeignKey(User, null=True)
+    profile = models.ForeignKey(Profile, null=True)
 
     @classmethod
-    def follow(cls,current_user,new):
-        friends,created=cls.objects.get_or_create(current_user=current_user)
-        friends.users.add(new)
-
-    @classmethod
-    def unfollow(cls,current_user,new):
-        friends,created=cls.objects.get_or_create(current_user=current_user)
-        friends.users.remove(new)
+    def get_followers(cls, user):
+        followers = cls.objects.filter(user=user).first()
+        return followers

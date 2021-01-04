@@ -50,11 +50,8 @@
         {% endif %}
         {% endfor%}
         </div>
-        {% for follow in follows %}
-        <p>{{user.follow.all.username}}</p>
-        <span class="font-weight-bold">{{user.follow.all | length}}</span> Followers <br><br>
-        <span class="font-weight-bold">{{user.user.c_user.all | length}}</span> Following
-        {% endfor%}
+        <span class="font-weight-bold">{{request.user.follow.all| length}}</span>Followers<br>
+        <span class="font-weight-bold">{{request.user.user.c_user.all | length}}</span> Following
 </div>
 </div>
 
