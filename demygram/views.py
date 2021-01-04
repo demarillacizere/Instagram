@@ -101,6 +101,22 @@ def my_profile(request):
     else:
         posts = Post.get_posts_by_id(profile.id)
         return render(request, 'profile.html', {"posts": posts, "profile": profile})
+        
+@login_required(login_url='/accounts/login/')
+def add_profile(request):
+    current_user = request.user
+    if request.method == 'POST':
+        form = AddProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = current_user
+            profile.save()
+        return redirect('my_profile')
+
+    else:
+        form = AddProfileForm()
+    return render(request, 'add_profile.html', {"form": form})
+
 
 @login_required(login_url='/accounts/login/')
 def search_results(request):
