@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    .hovereffect {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+      text-align: center;
+  }
+  .hovereffect .overlay {
+    position: absolute;
+    overflow: hidden;
+    width: 80%;
+    height: 80%;
+    left: 10%;
+    top: 12%;
+    -webkit-transform: scale(0,1);
+    -ms-transform: scale(0,1);
+    transform: scale(0,1);
+  }
+  div.col-xs-6.col-sm-6.col-md-4.col-lg-3{
+    padding: 5px;
+    padding-bottom: 2px;
+}
+  .hovereffect:hover .overlay {
+    opacity: 1;
+    filter: alpha(opacity=100);
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
+  
+  .hovereffect img {
+    display: block;
+    position: relative;
+    -webkit-transition: all 0.35s;
+    transition: all 0.35s;
+    margin-bottom: 7px;
+  }
+  
+  .hovereffect:hover img {
+    filter: brightness(0.6);
+    -webkit-filter: brightness(0.6);
+    -moz-filter: brightness(0.6);
+    -o-filter: brightness(0.6);
+    -ms-filter: brightness(0.6);
+  }
+  
+  .hovereffect h4 {
+      text-transform: uppercase;
+      text-align: center;
+      position: relative;
+      font-size: 15px;
+      background-color: transparent;
+      font-weight:bold;
+      color: #ffffff;
+      margin-top: 2em;
+      padding: 2em 2em;
+      opacity: 0;
+      filter: alpha(opacity=0);
+      
+      -webkit-transform: translate3d(0,-100%,0);
+      transform: translate3d(0,-100%,0);
+      letter-spacing: 2px;
+  }
+  
+  .hovereffect p{
+      color: #FFF;
+      line-height: 1.8em;
+      opacity: 0;
+      filter: alpha(opacity=0);
+      -webkit-transition: opacity 0.35s, -webkit-transform 0.35s;
+      transition: opacity 0.35s, transform 0.35s;
+      -webkit-transform: translate3d(0,100%,0);
+      transform: translate3d(0,100%,0);
+  }
+  
+  .hovereffect:hover p, .hovereffect:hover h4 {
+      opacity: 1;
+      filter: alpha(opacity=100);
+      -webkit-transform: translate3d(0,0,0);
+      transform: translate3d(0,0,0);
+  }
+  .fab { transform: scale(1.7,1.8); }
+</style>
+<div class="container-fluid" id="profile">
+    <div class="row" id="top">
+        <div class="col-sm-1 col-md-2" style="margin-top: 7%;">
+            <p>FOLLOWING</p>
+            <p>{{followingcount}}</p>
+        </div>
+        <div class="col-sm-1 col-md-2" style="margin-top: 7%;">
+            <p>FOLLOWERS</p>
+            <p>{{followercount}}</p>
+        </div>
+        <div class="col-sm-2 col-md-4">
+            <img src="{{profile_user.profile.profile_pic.url}}" alt="" id="profilepic" class="img-fluid">
+            <h3 style="margin-top:7%;letter-spacing:5px;font:bold;font-size: 50px;">{{profile_user.username}}</h3>
+        </div>
+    </div>
+    <div style="margin-top:1%;">
+        <p>{{profile_user.profile.bio}}</p>
+    </div>
+    <div class="nav navbar-nav" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <div>
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </div>
+            </div>
+            <div class="nav navbar-nav navbar-right">
+                <ul class="nav" id="mynav">
+                    <li class="nav-item" id="first" style="margin-left:20%;">
+                        <i class="fab fa-instagram"></i>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{%url 'insta' %}">
+                            <i class="fas fa-th"></i> Posts</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row" id='gallery'>
+        {% for post in posts %}
+             <div class="col-xs-6 col-sm-6 col-md-8 col-lg-8">
+                     <div class="portfolio-wrap ">
+                         <div class="portfolio-wrap hovereffect">
+                             <a class="img-overlay" data-toggle="modal" data-target="#{{post.id}}" style="width:100%">
+                                <h5>{{post.user}}</h5>
+                                <small><i class="fas fa-map-marker-alt"></i><span> {{post.location}}</span></small>
+                                 <img src="{{post.post_image.url}}" width='100%' href="" class="post" alt="post" >
+                                 <div class="overlay">
+                                    <h4 class="fas fa-heart">{{post.like}}</i><i class="fas fa-comment">{{count}}</i></h4>
+                                 </div>
+                             </a>
+                         </div>
+                     </div>
+                     <span>
+                        <form action="{%url 'insta' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="post" value="{{post.id}}">
+                            <button class="btn btn-danger" id="heart2" type="submit"><i
+                                    class="fas fa-heart"> {{post.like}}</i></button>
+                        </form></button> <i class="far fa-comment"></i></span>
+                     {% for comment in comments %}
+                     {% if comment.post.id == post.id %}
+                     <div class='panel'>
+                         {{comment.user.username}} {{comment.comment}} {{comment.date_posted|timesince}} ago
+                     </div>
+                     {% endif %}
+                     {% endfor %}
+                     <div><a href="{% url 'single_post' post_id=post.id %}">Add a comment </a></div>
+                 </div>
+        {% endfor %}
+        
+        <!-- post details modal -->
+        {% for post in posts %}
+            <div class="modal fade" id="{{post.id}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel">{{post.user|title}}</h5>
+                            <small><i class="fas fa-map-marker-alt"></i><span> {{post.location}}</span></small>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                                    <div><img id="img{{post.id}}" src="{{post.post_image.url}}" class="img-thumbnail" alt="post" width='100%'></div><br>
+                                    <p class="desc">{{post.caption}}</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+</div>
+{% endblock %}

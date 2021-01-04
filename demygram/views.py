@@ -3,7 +3,7 @@ from django.http import HttpResponse, Http404,HttpResponseRedirect
 import datetime as dt
 from .models import Post,Comment,Follow,Profile
 from django.contrib.auth.decorators import login_required
-from .forms import NewPostForm, NewCommentForm
+from .forms import NewPostForm, NewCommentForm, AddProfileForm
 from django.contrib.auth.models import User
 
 def signup(request):
@@ -95,13 +95,13 @@ def single_post(request, post_id):
 @login_required(login_url='/accounts/login/')
 def my_profile(request):
     current_user = request.user
-    profile = Profile.objects.filter(user=current_user)
+    profile = Profile.objects.get(user=current_user)
     if profile == None:
         return redirect('add_profile')
     else:
         posts = Post.get_posts_by_id(profile.id)
-        return render(request, 'profile.html', {"posts": posts, "profile": profile})
-        
+    return render(request, 'profile.html', {"posts": posts, "profile": profile})
+
 @login_required(login_url='/accounts/login/')
 def add_profile(request):
     current_user = request.user
@@ -138,7 +138,7 @@ def search_results(request):
 @login_required(login_url='/accounts/login/')
 def profile(request, profile_id):
     profile = Profile.get_profile_id(profile_id)
-    posts = Post.filter(profile=profile.id)
+    posts = Post.objects.filter(profile=profile.id)
     return render(request, 'user_profile.html', {"posts": posts, "profile": profile})
 
 

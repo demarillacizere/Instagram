@@ -10,12 +10,15 @@
         }
 </style>
 <div class="container">
+    <p><a href="{% url 'add_profile' %}" class="btn btn-info">+ profile</a></p>
+  <p><a href="{% url 'new-post' %}" class="btn btn-info">+ photo</a>
+
     <div>{{message}}</div>
     <div class="row" id='timeline'>
         <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
             {% for post in posts %}
             <div class='card'>
-                <h5 class='card-header'>{{post.user}}<br><small><i class="fas fa-map-marker-alt"></i><span>{{post.location}}</span></small></h5>
+                <h5 class='card-header'><a href="{% url 'profile' post.profile.id %}">{{post.user}}</a><br><small><i class="fas fa-map-marker-alt"></i><span>{{post.location}}</span></small></h5>
                 <div class='card-body'>
                     <img src="{{post.post_image.url}}" width='100%' class="post" alt="post" ><br>
                     <div>
