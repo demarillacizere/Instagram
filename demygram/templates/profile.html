@@ -86,21 +86,13 @@
 </style>
 <div class="container-fluid" id="profile">
     <div class="row" id="top">
-        <div class="col-sm-1 col-md-2" style="margin-top: 7%;">
-            <p>FOLLOWING</p>
-            <p>{{followingcount}}</p>
-        </div>
-        <div class="col-sm-1 col-md-2" style="margin-top: 7%;">
-            <p>FOLLOWERS</p>
-            <p>{{followercount}}</p>
-        </div>
         <div class="col-sm-2 col-md-4">
-            <img src="{{profile_user.profile.profile_pic.url}}" alt="" id="profilepic" class="img-fluid">
-            <h3 style="margin-top:7%;letter-spacing:5px;font:bold;font-size: 50px;">{{profile_user.username}}</h3>
+            <img src="{{profile.profile_pic.url}}" alt="" id="profilepic" class="img-fluid">
+            <h3 style="margin-top:7%;letter-spacing:5px;font:bold;font-size: 50px;">{{profile.user.username}}</h3>
         </div>
     </div>
     <div style="margin-top:1%;">
-        <p>{{profile_user.profile.bio}}</p>
+        <p>{{profile.profile.bio}}</p>
     </div>
     <div class="nav navbar-nav" role="navigation">
         <div class="container-fluid">

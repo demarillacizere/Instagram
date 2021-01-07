@@ -89,8 +89,8 @@ class Comment(models.Model):
         ordering = ['comment']
 
 class Follow(models.Model):
-    user = models.ForeignKey(User, null=True)
-    profile = models.ForeignKey(Profile, null=True)
+    user = models.ForeignKey(User,on_delete=models.CASCADE, null=True)
+    profile = models.ForeignKey(Profile,on_delete=models.CASCADE, null=True)
 
     @classmethod
     def get_followers(cls, user):

@@ -25,35 +25,25 @@ def signup(request):
 def insta(request):
     users = User.objects.all()
     current_user = request.user
-    follows = Follow.get_followers(current_user)
-    follow = None
     comments = Comment.objects.all()
-    posts = None
-    if follows == None:
-        message = 'Please follow a user to see their latest posts on your timeline'
-        return render(request, 'index.html', {"message": message, "user": current_user,'users':users})
-
-    else:
-        for follow in follows:
-            posts = Post.get_posts_by_id(follow.profile_id)
-            print(posts)
+    posts = Post.objects.all()
+    for post in posts:
+        if request.method=='POST' and 'comment' in request.POST:
+            comment=Comment(comment=request.POST.get("comment"),
+                            post=int(request.POST.get("post")),
+                            user=request.POST.get("user"),
+                            count=0)
+            comment.save()
+            comment.count=F('count')+1
+            return redirect('insta')
+        if request.method=='POST' and 'post' in request.POST:
+            posted=request.POST.get("post")
             for post in posts:
-                if request.method=='POST' and 'comment' in request.POST:
-                    comment=Comment(comment=request.POST.get("comment"),
-                                    post=int(request.POST.get("post")),
-                                    user=request.POST.get("user"),
-                                    count=0)
-                    comment.save()
-                    comment.count=F('count')+1
-                    return redirect('insta')
-                elif request.method=='POST' and 'post' in request.POST:
-                    posted=request.POST.get("post")
-                    for post in posts:
-                        if (int(post.id)==int(posted)):
-                            post.like+=1
-                            post.save()
-                    return redirect('insta')
-        return render(request, 'index.html', {"posts": posts, 'comments':comments,'users':users,'follow':follow,'user':current_user})
+                if (int(post.id)==int(posted)):
+                    post.like+=1
+                    post.save()
+            return redirect('insta')
+    return render(request, 'index.html', {"posts": posts, 'comments':comments,'users':users,'user':current_user})
 
 
 @login_required(login_url='/accounts/login/')

@@ -1,31 +1,48 @@
+{% load bootstrap3 %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    nav{
+      background-color:rgb(226, 219, 219);
+    }
+    i{
+      padding-right:5px;
+    }
+  </style>
 </head>
 <body>
 <nav class="navbar navbar-light">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="{% url 'insta' %}">Instagram</a>
+      <a class="navbar-brand" href="{% url 'insta' %}"><i class="fab fa-instagram"></i> Instagram</a>
+      <div class="col-10">
+
+        <form class="navbar-form" role="search" action="{% url 'search_results' %}">
+
+          <div class="input-group" style="width: 40%">
+            <input type="text" class="form-control" placeholder="Search user" name="user">
+            <div class="input-group-btn">
+              <button class="btn btn-default" type="submit"><img src="https://static.thenounproject.com/png/101791-200.png" width="20" height="20" alt=""></button>
+            </div>
+          </div>
+
+        </form>
+    </div>
     </div>
   <div class="col-sm-2 col-md-2 nav navbar-right">
     {% if user.is_authenticated %}
-    <ul>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle btn btn-default" data-toggle="dropdown" role="button" aria-expanded="false">Account
-                    <span class="caret"></span>
+    <ul class="nav navbar-nav">
+        <li><a href="{%url 'insta'%}" class="nav-link"><span class="glyphicon glyphicon-home"></span></a></li>
+        <li><a href='' class="nav-link"><img src='profile.profil_pic.url'></a></li>
+        <li><a href="{%url 'new-post'%}" class="nav-link"><i class="fas fa-plus"></i></a></li>
+        <li class="dropdown nav-item">
+          <a href="#" class="btn btn-default nav-link" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fas fa-ellipsis-v"></i>
                 </a>
           <ul class="dropdown-menu" role="menu">
-            <li>
-              <a href="{%url 'insta'%}">Home</a>
-            </li>
-            <li>
-              <a href="{%url 'new-post'%}">Upload a picture</a>
-            </li>
             <li>
               <a href="/accounts/password/change">Change Password</a>
             </li>
@@ -34,12 +51,11 @@
             </li>
           </ul>
         </li>
-      </ul>
     {% else %}
     <li>
       <a class='btn btn-default' href="/accounts/login">Login</a>
     </li>
-
+    </ul>
     {% endif %}
   </div>
 </nav>
