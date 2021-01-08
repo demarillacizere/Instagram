@@ -24,7 +24,7 @@ td{
     <div class="row" id='timeline'>
         <div class="col-xs-0 col-sm-0 col-md-1 col-lg-1"></div>
         <div class="col-md-7 col-lg-7">
-            {% for post in posts %}
+            {% for post in posts_lists %}
             <div class='panel panel-default'>
                <div class='panel-heading'><h5><a href="/profile/{{post.profile.id}}" style='text-decoration: none;'><b>{{post.user}}</a></b><br><small><i class="fas fa-map-marker-alt"></i>{{post.location}}</small></h5></div>
                 <div class='panel-body'>
@@ -64,7 +64,7 @@ td{
         <table class='table table-borderless'>
             <tbody>
                 {% for user in users %}
-                {% if user != request.user %}
+                {% if user != request.user and user not in follow.profile.user %}
                 <tr>
                     <th>{{user.username}}</th>
                     <td><a href="{%url 'follow' user.id %}"><b>Follow</b></a></td>

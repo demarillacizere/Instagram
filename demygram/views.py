@@ -26,18 +26,23 @@ def insta(request):
     users = User.objects.all()
     current_user = request.user
     comments = Comment.objects.all()
-    posts = Post.objects.all()
     my_profile = Profile.get_profile(current_user)
     following = Follow.get_followers(current_user)
-    for post in posts:
-        if request.method=='POST' and 'post' in request.POST:
-            posted=request.POST.get("post")
-            for post in posts:
-                if (int(post.id)==int(posted)):
-                    post.like+=1
-                    post.save()
-            return redirect('insta')
-    return render(request, 'index.html', {"posts": posts, 'comments':comments,'users':users,'user':current_user,'my_profile':my_profile,'following':following})
+    follow_list = list(following)
+    posts_list=[]
+    for follow in follow_list:
+        posts = Post.objects.filter(profile=follow.profile)
+        posts_list.append(posts)
+        for post in posts_list:
+            if request.method=='POST' and 'post' in request.POST:
+                posted=request.POST.get("post")
+                for post in posts:
+                    if (int(post.id)==int(posted)):
+                        post.like+=1
+                        post.save()
+                return redirect('insta')
+    print(posts_list)
+    return render(request, 'index.html', {"posts_list": posts_list, 'comments':comments,'users':users,'user':current_user,'my_profile':my_profile,'follow_list':follow_list})
 
 
 @login_required(login_url='/accounts/login/')
