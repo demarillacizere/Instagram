@@ -28,15 +28,8 @@ def insta(request):
     comments = Comment.objects.all()
     posts = Post.objects.all()
     my_profile = Profile.get_profile(current_user)
+    following = Follow.get_followers(current_user)
     for post in posts:
-        if request.method=='POST' and 'comment' in request.POST:
-            comment=Comment(comment=request.POST.get("comment"),
-                            post=int(request.POST.get("post")),
-                            user=request.POST.get("user"),
-                            count=0)
-            comment.save()
-            comment.count=F('count')+1
-            return redirect('insta')
         if request.method=='POST' and 'post' in request.POST:
             posted=request.POST.get("post")
             for post in posts:
@@ -44,7 +37,7 @@ def insta(request):
                     post.like+=1
                     post.save()
             return redirect('insta')
-    return render(request, 'index.html', {"posts": posts, 'comments':comments,'users':users,'user':current_user,'my_profile':my_profile})
+    return render(request, 'index.html', {"posts": posts, 'comments':comments,'users':users,'user':current_user,'my_profile':my_profile,'following':following})
 
 
 @login_required(login_url='/accounts/login/')
@@ -112,15 +105,11 @@ def add_profile(request):
 @login_required(login_url='/accounts/login/')
 def search_results(request):
     if 'user' in request.GET and request.GET["user"]:
-        profile = None
         search_term = request.GET.get("user")
-        current_user = User.objects.filter(username__icontains = search_term)
-        for item in current_user:
-            profile = Profile.get_many_profiles(item)
-            print(item)
+        profiles = Profile.find_profile(search_term)
         message = f"{search_term}"
         
-        return render(request, 'search.html',{"results": profile, "user": current_user, "message":message})
+        return render(request, 'search.html',{"results": profiles, "message":message})
 
     else:
         message = "You haven't searched for any term"
@@ -130,7 +119,25 @@ def search_results(request):
 def profile(request, profile_id):
     profile = Profile.get_profile_id(profile_id)
     posts = Post.objects.filter(profile=profile.id)
-    return render(request, 'user_profile.html', {"posts": posts, "profile": profile})
+    count = Post.objects.filter(profile=profile).count
+    comments = Comment.objects.all()
+    for post in posts:
+        if request.method=='POST' and 'comment' in request.POST:
+            comment=Comment(comment=request.POST.get("comment"),
+                            post=int(request.POST.get("post")),
+                            user=request.POST.get("user"),
+                            count=0)
+            comment.save()
+            comment.count=F('count')+1
+            return redirect('profile',profile_id)
+        if request.method=='POST' and 'post' in request.POST:
+            posted=request.POST.get("post")
+            for post in posts:
+                if (int(post.id)==int(posted)):
+                    post.like+=1
+                    post.save()
+            return redirect('profile', profile_id)
+    return render(request, 'user_profile.html', {"posts": posts, "profile": profile, 'count':count,'comments':comments})
 
 
 @login_required(login_url='/accounts/login/')

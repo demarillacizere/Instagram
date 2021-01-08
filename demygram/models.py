@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,null=True)
     profile_photo= models.ImageField(upload_to='profiles/',null=True)
-    bio= models.CharField(max_length=240, null=True)
+    bio= models.CharField(max_length=140, null=True)
 
 
     def save_profile(self):
@@ -32,8 +32,8 @@ class Profile(models.Model):
 
 class Post(models.Model):
     post_image = models.ImageField(upload_to = 'posts/')
-    caption = models.TextField()
-    location = models.TextField()
+    caption = models.CharField(max_length =240)
+    location = models.CharField(max_length =30)
     date_posted = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile,on_delete=models.CASCADE,null = True)

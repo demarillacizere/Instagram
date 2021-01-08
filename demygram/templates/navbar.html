@@ -7,41 +7,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     nav{
-      background-color:rgb(226, 219, 219);
+      background-color:rgb(234, 234, 236);
       position: fixed;
       top:0;
-      width:100%;
-      height:30px;
+      color: black;
+      font-family: 'Vollkorn', serif;
     }
     i{
       padding-right:5px;
     }
+    nav a{
+      text-decoration: none;
+      color:black;
+    }
   </style>
 </head>
 <body>
-<nav class="navbar navbar-light">
+<nav class="navbar navbar-light nav-bar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
+      <div class='col-xs-0 col-sm-0 col-md-2 col-lg-3'></div>
       <a class="navbar-brand" href="{% url 'insta' %}"><i class="fab fa-instagram"></i> Instagram</a>
-      <div class="col-sm-5">
+      <div class="col-sm-2 col-md-4 col-lg-5">
 
         <form class="navbar-form" role="search" action="{% url 'search_results' %}">
 
-          <div class="input-group" style="width: 40%">
+          <div class="input-group">
             <input type="text" class="form-control" placeholder="Search user" name="user">
             <div class="input-group-btn">
-              <button class="btn btn-default" type="submit"><img src="https://static.thenounproject.com/png/101791-200.png" width="20" height="20" alt=""></button>
+              <button class="btn btn-default" type="submit"><i class="fas fa-search"></i></button>
             </div>
           </div>
 
         </form>
     </div>
     </div>
-  <div class="col-sm-2 col-md-2 nav navbar-right">
+  <div class="col-sm-3 col-md-3 nav navbar-right">
     {% if user.is_authenticated %}
     <ul class="nav navbar-nav">
         <li><a href="{%url 'insta'%}" class="nav-link"><span class="glyphicon glyphicon-home"></span></a></li>
-        <li><a href='' class="nav-link"><img src='profile.profil_pic.url'></a></li>
+        <li><a href='' class="nav-link"><img src='{{my_profile.profile_photo.url}}' width='20px' height='20px' style='border-radius:50%;' class='image-thumbnail'></a></li>
         <li><a href="{%url 'new-post'%}" class="nav-link"><i class="fas fa-plus"></i></a></li>
         <li class="dropdown nav-item">
           <a href="#" class="btn btn-default nav-link" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fas fa-ellipsis-v"></i>

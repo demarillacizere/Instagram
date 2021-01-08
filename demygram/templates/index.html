@@ -14,10 +14,10 @@
 <div class="container">
     <div class="row" id='timeline'>
         <div class="col-xs-0 col-sm-0 col-md-1 col-lg-1"></div>
-        <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
+        <div class="col-md-7 col-lg-7">
             {% for post in posts %}
             <div class='panel panel-default'>
-                <h5 class='panel-heading'><a href="/profile/{{post.profile.id}}"><b>{{post.user}}</a></b><br><small><i class="fas fa-map-marker-alt"></i>{{post.location}}</small></h5>
+               <div class='panel-heading'><h5><a href="/profile/{{post.profile.id}}" style='text-decoration: none;'><b>{{post.user}}</a></b><br><small><i class="fas fa-map-marker-alt"></i>{{post.location}}</small></h5></div>
                 <div class='panel-body'>
                     <img src="{{post.post_image.url}}" width='100%' class="post" alt="post" ><br><br>
                     <div>
@@ -29,11 +29,11 @@
                         </form>
                     </div><br>
                     <p>{{post.like}} likes</p>
-                    <div><b>{{post.user}}</b> {{post.caption}} <span style='text-align:right;'>{{post.date_posted|timesince}} ago</span></div><br>
-                    {% for comment in comments|slice:":6" %}
+                    <div><b>{{post.user}}</b> {{post.caption}}<span style='display:block;'class='text-muted small'>{{post.date_posted|timesince}} ago</span></div><br>
+                    {% for comment in comments|slice:":10" %}
                     {% if comment.post.id == post.id %}
                     <div class='panel'>
-                        <b>{{comment.user.username}}</b> {{comment.comment}} <br>{{comment.date_posted|timesince}} ago
+                        <b>{{comment.user.username}}</b> {{comment.comment}}
                     </div>
                     {% endif %}
                     {% endfor %}
@@ -41,7 +41,7 @@
                     <div class='panel-footer'><a href="{% url 'single_post' post_id=post.id %}">Add a comment </a></div>
              </div><br><br>
             {% endfor %}</div>
-        <div class='col-xs-4 col-sm-4 col-md-4 col-lg-4' id='suggestions'>
+        <div class='col-xs-0 col-sm-0 col-md-4 col-lg-4' id='suggestions'>
         <div class="row">
             <div class='col-md-3'><img class="img-fluid rounded-circle " src="{{my_profile.profile_photo.url}}" style="height:70px;width:70px;margin-top:5px;margin-bottom:5px; border-radius:50%;"></div>
             <div class='col-md-3' style="text-align:center;display:flex;flex-direction:column;justify-content: center;"><br><span>{{my_profile.user.username}}</span>
