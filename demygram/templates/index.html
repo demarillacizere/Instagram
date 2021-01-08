@@ -5,46 +5,52 @@
 
 <style>
     #suggestions{
-        position:sticky;
-        position:-webkit-sticky;
-        top:0;
+        position:fixed;
+        top:55px;
+        right:0;
         }
+
 </style>
 <div class="container">
-    <p><a href="{% url 'add_profile' %}" class="btn btn-info">+ profile</a></p>
-    <div>{{message}}</div>
     <div class="row" id='timeline'>
-        <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+        <div class="col-xs-0 col-sm-0 col-md-1 col-lg-1"></div>
+        <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
             {% for post in posts %}
-            <div class='card'>
-                <h4 class='card-header'><a href="{% url 'profile' post.profile.id %}">{{post.user}}</a><br><small><i class="fas fa-map-marker-alt"></i>{{post.location}}</small></h4>
-                <div class='card-body'>
-                    <img src="{{post.post_image.url}}" width='100%' class="post" alt="post" ><br>
+            <div class='panel panel-default'>
+                <h5 class='panel-heading'><a href="/profile/{{post.profile.id}}"><b>{{post.user}}</a></b><br><small><i class="fas fa-map-marker-alt"></i>{{post.location}}</small></h5>
+                <div class='panel-body'>
+                    <img src="{{post.post_image.url}}" width='100%' class="post" alt="post" ><br><br>
                     <div>
                         <form action="{%url 'insta' %}" method="post">
                             {% csrf_token %}
                             <input type="hidden" name="post" value="{{post.id}}">
-                            <button class='btn' type='submit'><i class="fas fa-heart"> {{post.like}}</i></button>
-                            <button class='btn'><i class="fas fa-comment"></i></button>
+                            <button class='btn btn-danger' type='submit'><i class="far fa-heart"> </i></button>
+                            <a href="{% url 'single_post' post_id=post.id %}" class='btn btn-danger'><i class="far fa-comment"></i></a>
                         </form>
-                    </div>
+                    </div><br>
+                    <p>{{post.like}} likes</p>
                     <div><b>{{post.user}}</b> {{post.caption}} <span style='text-align:right;'>{{post.date_posted|timesince}} ago</span></div><br>
                     {% for comment in comments|slice:":6" %}
                     {% if comment.post.id == post.id %}
                     <div class='panel'>
-                        <b>{{comment.user.username}}</b> {{comment.comment}} {{comment.date_posted|timesince}} ago
+                        <b>{{comment.user.username}}</b> {{comment.comment}} <br>{{comment.date_posted|timesince}} ago
                     </div>
                     {% endif %}
                     {% endfor %}
                 </div>
-                    <div class='card-footer'><a href="{% url 'single_post' post_id=post.id %}">Add a comment </a></div>
+                    <div class='panel-footer'><a href="{% url 'single_post' post_id=post.id %}">Add a comment </a></div>
              </div><br><br>
             {% endfor %}</div>
         <div class='col-xs-4 col-sm-4 col-md-4 col-lg-4' id='suggestions'>
-        <h5>Suggestions</h5>
+        <div class="row">
+            <div class='col-md-3'><img class="img-fluid rounded-circle " src="{{my_profile.profile_photo.url}}" style="height:70px;width:70px;margin-top:5px;margin-bottom:5px; border-radius:50%;"></div>
+            <div class='col-md-3' style="text-align:center;display:flex;flex-direction:column;justify-content: center;"><br><span>{{my_profile.user.username}}</span>
+            <a href="{% url 'add_profile' %}">Add profile</a></div>
+        </div><br>
+        <h5><b>Suggestions for you</b></h5><br>
         {% for user in users %}
         {% if user != request.user %}
-        <span>{{user.username}} <button class='btn'><button type="button" class="btn btn-outline-primary"><a href="{%url 'follow' user.id %}">Follow</a></button></span><br>
+        <span style='display:inline-block;margin-bottom:10px;'>{{user.username}} <a href="{%url 'follow' user.id %}"><b style='display:inline-block;padding-left:70px;'>Follow</b></a></span><br>
         {% endif %}
         {% endfor%}
         </div>

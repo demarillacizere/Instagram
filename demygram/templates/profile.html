@@ -86,13 +86,14 @@
 </style>
 <div class="container-fluid" id="profile">
     <div class="row" id="top">
+        <div class='col-sm-2 col-md-4'></div>
         <div class="col-sm-2 col-md-4">
             <img src="{{profile.profile_pic.url}}" alt="" id="profilepic" class="img-fluid">
             <h3 style="margin-top:7%;letter-spacing:5px;font:bold;font-size: 50px;">{{profile.user.username}}</h3>
         </div>
     </div>
     <div style="margin-top:1%;">
-        <p>{{profile.profile.bio}}</p>
+        <p>{{profile.bio}}</p>
     </div>
     <div class="nav navbar-nav" role="navigation">
         <div class="container-fluid">
@@ -119,6 +120,7 @@
     </div>
     <div class="container">
         <div class="row" id='gallery'>
+            <div class="col-xs-0 col-sm-2 col-md-2 col-lg-2"></div>
         {% for post in posts %}
              <div class="col-xs-6 col-sm-6 col-md-8 col-lg-8">
                      <div class="portfolio-wrap ">

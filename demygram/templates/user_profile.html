@@ -91,7 +91,7 @@
 <div class="container-fluid" id="profile">
     <div class="row container" id="top">
         <div class="col-sm-2 col-md-4 row">
-            <div class='col-md-3'><img src="{{profile.profile_photo.url}}" alt="" id="profilepic" width='100%' style='border-radius:50%;'class="img-fluid"></div>
+            <div class='col-md-3'><img src="{{profile.profile_photo.url}}" alt="" width='100%' style='border-radius:50%;'class="img-fluid"></div>
             <div class='col-md-8'><h3 style="margin-top:7%;letter-spacing:5px;font:bold;font-size: 50px;">{{profile.username}}</h3></div>
         </div>
     </div>
@@ -116,6 +116,7 @@
     <hr>
     <div class="container">
         <div class="row" id='gallery'>
+            <div class="col-xs-0 col-sm-2 col-md-2 col-lg-2"></div>
         {% for post in posts %}
              <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4" id='gallery'>
                      <div class="portfolio-wrap ">

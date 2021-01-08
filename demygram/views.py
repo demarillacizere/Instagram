@@ -27,6 +27,7 @@ def insta(request):
     current_user = request.user
     comments = Comment.objects.all()
     posts = Post.objects.all()
+    my_profile = Profile.get_profile(current_user)
     for post in posts:
         if request.method=='POST' and 'comment' in request.POST:
             comment=Comment(comment=request.POST.get("comment"),
@@ -43,7 +44,7 @@ def insta(request):
                     post.like+=1
                     post.save()
             return redirect('insta')
-    return render(request, 'index.html', {"posts": posts, 'comments':comments,'users':users,'user':current_user})
+    return render(request, 'index.html', {"posts": posts, 'comments':comments,'users':users,'user':current_user,'my_profile':my_profile})
 
 
 @login_required(login_url='/accounts/login/')
