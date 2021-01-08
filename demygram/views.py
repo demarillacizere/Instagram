@@ -44,25 +44,27 @@ def insta(request):
 def new_post(request):
     current_user = request.user
     profile = Profile.get_profile(current_user)
-    if request.method == 'POST':
-        form = NewPostForm(request.POST, request.FILES)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.user = current_user
-            post.profile = profile
-            post.save()
-        return redirect('insta')
-
+    if profile == None:
+        return redirect('add_profile')
     else:
-        form = NewPostForm()
-    return render(request, 'new_post.html', {"form": form})
+        if request.method == 'POST':
+            form = NewPostForm(request.POST, request.FILES)
+            if form.is_valid():
+                post = form.save(commit=False)
+                post.user = current_user
+                post.profile = profile
+                post.save()
+            return redirect('insta')
+
+        else:
+            form = NewPostForm()
+        return render(request, 'new_post.html', {"form": form})
 
 @login_required(login_url='/accounts/login/')
 def single_post(request, post_id):
     post = Post.objects.get(pk=post_id)
     comments = Comment.get_comments_by_post(post_id).order_by('-date_posted')
     current_user = request.user
-    count = Comment.get_comments_by_post(post_id).count
     if request.method == 'POST':
         form = NewCommentForm(request.POST)
         if form.is_valid():
@@ -71,20 +73,79 @@ def single_post(request, post_id):
             new_comment.post = post
             new_comment.save()
             return redirect('single_post',post_id=post_id)
+    if request.method=='POST' and 'post' in request.POST:
+            posted=request.POST.get("post")
+            for post in posts:
+                if (int(post.id)==int(posted)):
+                    post.like+=1
+                    post.save()
+            return redirect('single_post',post_id=post_id)
     else:
         form = NewCommentForm()
         
-    return render(request, 'post.html', {'post':post, 'form':form,'comments':comments,'count':count})    
+    return render(request, 'post.html', {'post':post, 'form':form,'comments':comments})    
 
 @login_required(login_url='/accounts/login/')
 def my_profile(request):
     current_user = request.user
     profile = Profile.objects.get(user=current_user)
+    count = Post.objects.filter(profile=profile).count
+    comments = Comment.objects.all()
+    posts = None
     if profile == None:
         return redirect('add_profile')
     else:
         posts = Post.get_posts_by_id(profile.id)
-    return render(request, 'profile.html', {"posts": posts, "profile": profile})
+        for post in posts:
+            if request.method=='POST' and 'post' in request.POST:
+                posted=request.POST.get("post")
+                for post in posts:
+                    if (int(post.id)==int(posted)):
+                        post.like+=1
+                        post.save()
+                return redirect('profile', profile_id=profile_id)
+        return render(request, 'profile.html', {"posts": posts, "profile": profile, 'count':count,'comments':comments})
+
+@login_required(login_url='/accounts/login/')
+
+def update_post(request,post_id):
+    post= Post.objects.get(pk=post_id)
+    if request.method == 'POST':
+        form = NewPostForm(request.POST)
+        if form.is_valid():
+            post.caption=form_data.cleaned_data[caption]
+            post=post.update_post(post_id,caption)
+            return redirect('my_profile')
+    else:
+        form = NewPostForm()
+    return render(request, 'update_post.html',{'form':form,'post':post})
+
+def delete_post(request,post_id):
+    post= Post.objects.get(pk=post_id)
+    post.delete_post()
+    return redirect('my_profile')
+    return render(request, 'my_profile')
+
+
+@login_required(login_url='/accounts/login/')
+def new_post(request):
+    current_user = request.user
+    profile = Profile.get_profile(current_user)
+    if profile == None:
+        return redirect('add_profile')
+    else:
+        if request.method == 'POST':
+            form = NewPostForm(request.POST, request.FILES)
+            if form.is_valid():
+                post = form.save(commit=False)
+                post.user = current_user
+                post.profile = profile
+                post.save()
+            return redirect('insta')
+
+        else:
+            form = NewPostForm()
+        return render(request, 'new_post.html', {"form": form})
 
 @login_required(login_url='/accounts/login/')
 def add_profile(request):
@@ -92,15 +153,29 @@ def add_profile(request):
     if request.method == 'POST':
         form = AddProfileForm(request.POST, request.FILES)
         if form.is_valid():
-            profile = form.save(commit=False)
-            profile.user = current_user
-            profile.save()
+            new_profile = form.save(commit=False)
+            new_profile.user = current_user
+            new_profile.save()
         return redirect('my_profile')
 
     else:
         form = AddProfileForm()
     return render(request, 'add_profile.html', {"form": form})
 
+@login_required(login_url='/accounts/login/')
+def update_profile(request):
+    current_user = request.user
+    if request.method == 'POST':
+        form = AddProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            new_profile = form.save(commit=False)
+            new_profile.user = current_user
+            new_profile.save()
+        return redirect('my_profile')
+
+    else:
+        form = AddProfileForm()
+    return render(request, 'add_profile.html', {"form": form})
 
 @login_required(login_url='/accounts/login/')
 def search_results(request):
@@ -122,21 +197,13 @@ def profile(request, profile_id):
     count = Post.objects.filter(profile=profile).count
     comments = Comment.objects.all()
     for post in posts:
-        if request.method=='POST' and 'comment' in request.POST:
-            comment=Comment(comment=request.POST.get("comment"),
-                            post=int(request.POST.get("post")),
-                            user=request.POST.get("user"),
-                            count=0)
-            comment.save()
-            comment.count=F('count')+1
-            return redirect('profile',profile_id)
         if request.method=='POST' and 'post' in request.POST:
             posted=request.POST.get("post")
             for post in posts:
                 if (int(post.id)==int(posted)):
                     post.like+=1
                     post.save()
-            return redirect('profile', profile_id)
+            return redirect('profile', profile_id=profile_id)
     return render(request, 'user_profile.html', {"posts": posts, "profile": profile, 'count':count,'comments':comments})
 
 

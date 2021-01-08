@@ -5,8 +5,10 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^$',views.insta,name='insta'),
-    url(r'^$',views.signup, name='signup'),
+    url(r'^accounts/profile/', views.my_profile, name='my_profile'),
     url(r'^new/post$', views.new_post, name='new-post'),
+    url(r'^delete/post/(?P<post_id>\d+)',views.delete_post,name = 'delete_post'),
+    url(r'^update/post/(?P<post_id>\d+)',views.update_post,name = 'update_post'),
     url(r'^add/profile/$',views.add_profile,name = 'add_profile'),
     url(r'^my_profile/$',views.my_profile,name = 'my_profile'),
     url(r'^search/', views.search_results, name='search_results'),

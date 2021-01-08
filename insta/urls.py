@@ -21,5 +21,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'',include('demygram.urls')),
     url(r'^accounts/', include('registration.backends.simple.urls')),
-    url(r'^logout/$', views.LogoutView, {"next_page": '/'}),
+    url(r'^logout/$', views.LoginView.as_view(template_name='registration/login.html'), {"next_page": '/'}),
+    url(r'^logout/$', views.LogoutView.as_view(template_name='registration/logout.html'), {"next_page": '/'}),
 ]

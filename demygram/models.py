@@ -48,8 +48,8 @@ class Post(models.Model):
         self.delete()
     
     @classmethod
-    def update_post(cls, id ,post_image, caption , location):
-        update = cls.objects.filter(id = id).update(post_image = post_image, caption = caption ,location = location)
+    def update_post(cls,id):
+        update = cls.objects.filter(id = id).update(caption = caption)
     
     @classmethod
     def get_posts_by_id(cls, id):
@@ -67,7 +67,6 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
         )
     user = models.ForeignKey(User,on_delete=models.CASCADE)
-    count = models.IntegerField(default=0)
     def __str__(self):
         return self.user
 

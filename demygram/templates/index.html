@@ -6,12 +6,21 @@
 <style>
     #suggestions{
         position:fixed;
-        top:55px;
+        top:80px;
         right:0;
         }
-
+td{
+    border: none;
+}
+@media screen and (max-width:992px){
+    #suggestions{
+        position:absolute;
+        right:auto;
+        top:auto;
+    }
+}
 </style>
-<div class="container">
+<div class="container" style='margin-top:90px'>
     <div class="row" id='timeline'>
         <div class="col-xs-0 col-sm-0 col-md-1 col-lg-1"></div>
         <div class="col-md-7 col-lg-7">
@@ -41,18 +50,30 @@
                     <div class='panel-footer'><a href="{% url 'single_post' post_id=post.id %}">Add a comment </a></div>
              </div><br><br>
             {% endfor %}</div>
-        <div class='col-xs-0 col-sm-0 col-md-4 col-lg-4' id='suggestions'>
+        <div class='col-xs-7 col-sm-7 col-md-4 col-lg-4' id='suggestions'>
         <div class="row">
+            {% if my_profile %}
             <div class='col-md-3'><img class="img-fluid rounded-circle " src="{{my_profile.profile_photo.url}}" style="height:70px;width:70px;margin-top:5px;margin-bottom:5px; border-radius:50%;"></div>
-            <div class='col-md-3' style="text-align:center;display:flex;flex-direction:column;justify-content: center;"><br><span>{{my_profile.user.username}}</span>
-            <a href="{% url 'add_profile' %}">Add profile</a></div>
+            <div class='col-md-3'><br><span>{{my_profile.user.username}}</span><br>
+            <a href="{% url 'add_profile' %}">Edit profile</a></div>
+            {% else %}
+            <div class='col-md-3'><a href="{% url 'add_profile' %}" class='btn btn-info'>Add profile</a></div>
+            {% endif %}
         </div><br>
         <h5><b>Suggestions for you</b></h5><br>
-        {% for user in users %}
-        {% if user != request.user %}
-        <span style='display:inline-block;margin-bottom:10px;'>{{user.username}} <a href="{%url 'follow' user.id %}"><b style='display:inline-block;padding-left:70px;'>Follow</b></a></span><br>
-        {% endif %}
-        {% endfor%}
+        <table class='table table-borderless'>
+            <tbody>
+                {% for user in users %}
+                {% if user != request.user %}
+                <tr>
+                    <th>{{user.username}}</th>
+                    <td><a href="{%url 'follow' user.id %}"><b>Follow</b></a></td>
+                </tr>
+                {% endif %}
+                {% endfor%}
+            </tbody>
+        </table><br><br>
+        <p class='text-muted small'>&copy; 2021 | Demarillac Izere</p>
         </div>
 </div>
 </div>

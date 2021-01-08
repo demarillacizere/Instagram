@@ -8,9 +8,12 @@
   <style>
     nav{
       background-color:rgb(234, 234, 236);
-      position: fixed;
+      position:fixed;
       top:0;
+      width:100%;
       color: black;
+      height:60px;
+      z-index:2;
       font-family: 'Vollkorn', serif;
     }
     i{
@@ -23,12 +26,12 @@
   </style>
 </head>
 <body>
-<nav class="navbar navbar-light nav-bar-fixed-top">
+<nav class="navbar navbar-light" style='position:fixed;'>
   <div class="container-fluid">
     <div class="navbar-header">
       <div class='col-xs-0 col-sm-0 col-md-2 col-lg-3'></div>
       <a class="navbar-brand" href="{% url 'insta' %}"><i class="fab fa-instagram"></i> Instagram</a>
-      <div class="col-sm-2 col-md-4 col-lg-5">
+      <div class="col-sm-4 col-md-5 col-lg-5 nav navbar-center">
 
         <form class="navbar-form" role="search" action="{% url 'search_results' %}">
 
@@ -42,11 +45,13 @@
         </form>
     </div>
     </div>
-  <div class="col-sm-3 col-md-3 nav navbar-right">
+  <div class="col-sm-3 col-md-3 col-lg-3 nav navbar-right">
     {% if user.is_authenticated %}
     <ul class="nav navbar-nav">
         <li><a href="{%url 'insta'%}" class="nav-link"><span class="glyphicon glyphicon-home"></span></a></li>
-        <li><a href='' class="nav-link"><img src='{{my_profile.profile_photo.url}}' width='20px' height='20px' style='border-radius:50%;' class='image-thumbnail'></a></li>
+        {% if my_profile %}
+        <li><a href="{%url 'my_profile'%}" style='text-decoration: none;'><img src='{{my_profile.profile_photo.url}}' width='20px' height='20px' style='border-radius:50%;' class='image-thumbnail'></a></li>
+        {% endif %}
         <li><a href="{%url 'new-post'%}" class="nav-link"><i class="fas fa-plus"></i></a></li>
         <li class="dropdown nav-item">
           <a href="#" class="btn btn-default nav-link" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fas fa-ellipsis-v"></i>
