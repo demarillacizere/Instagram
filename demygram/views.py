@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 
 def signup(request):
     if request.user.is_authenticated():
-        return redirect('home')
+        return redirect('insta')
     else:
         if request.method == 'POST':
             form = SignupForm(request.POST)
@@ -23,26 +23,25 @@ def signup(request):
 
 @login_required(login_url='/accounts/login/')
 def insta(request):
+    title='Instagram'
     users = User.objects.all()
     current_user = request.user
-    comments = Comment.objects.all()
-    my_profile = Profile.get_profile(current_user)
-    following = Follow.get_followers(current_user)
-    follow_list = list(following)
-    posts_list=[]
-    for follow in follow_list:
-        posts = Post.objects.filter(profile=follow.profile)
-        posts_list.append(posts)
-        for post in posts_list:
-            if request.method=='POST' and 'post' in request.POST:
-                posted=request.POST.get("post")
-                for post in posts:
-                    if (int(post.id)==int(posted)):
-                        post.like+=1
-                        post.save()
-                return redirect('insta')
-    print(posts_list)
-    return render(request, 'index.html', {"posts_list": posts_list, 'comments':comments,'users':users,'user':current_user,'my_profile':my_profile,'follow_list':follow_list})
+    profile = Profile.objects.filter(user=current_user).first()
+    if profile == None:
+        my_profile = None
+    else:
+        my_profile=profile
+    comments = Comment.objects.all().order_by('-date_posted')
+    posts = Post.objects.all().order_by('-date_posted')
+    for post in posts:
+        if request.method=='POST' and 'post' in request.POST:
+            posted=request.POST.get("post")
+            for post in posts:
+                if (int(post.id)==int(posted)):
+                    post.like+=1
+                    post.save()
+            return redirect('insta')
+    return render(request, 'index.html', {"posts": posts, 'comments':comments,'users':users,'user':current_user,'my_profile':my_profile,'title':title})
 
 
 @login_required(login_url='/accounts/login/')
@@ -95,12 +94,12 @@ def my_profile(request):
     current_user = request.user
     profile = Profile.objects.get(user=current_user)
     count = Post.objects.filter(profile=profile).count
-    comments = Comment.objects.all()
+    comments = Comment.objects.all().order_by('-date_posted')
     posts = None
     if profile == None:
         return redirect('add_profile')
     else:
-        posts = Post.get_posts_by_id(profile.id)
+        posts = Post.get_posts_by_id(profile.id).order_by('-date_posted')
         for post in posts:
             if request.method=='POST' and 'post' in request.POST:
                 posted=request.POST.get("post")
@@ -114,7 +113,7 @@ def my_profile(request):
 @login_required(login_url='/accounts/login/')
 
 def update_post(request,post_id):
-    post= Post.objects.get(pk=post_id)
+    post= Post.objects.get(pk=post_id).order_by('-date_posted')
     if request.method == 'POST':
         form = NewPostForm(request.POST)
         if form.is_valid():
@@ -198,9 +197,9 @@ def search_results(request):
 @login_required(login_url='/accounts/login/')
 def profile(request, profile_id):
     profile = Profile.get_profile_id(profile_id)
-    posts = Post.objects.filter(profile=profile.id)
+    posts = Post.objects.filter(profile=profile.id).order_by('-date_posted')
     count = Post.objects.filter(profile=profile).count
-    comments = Comment.objects.all()
+    comments = Comment.objects.all().order_by('-date_posted')
     for post in posts:
         if request.method=='POST' and 'post' in request.POST:
             posted=request.POST.get("post")

@@ -60,7 +60,7 @@ class Post(models.Model):
         ordering = ['caption']
 
 class Comment(models.Model):
-    comment= models.CharField(max_length =30)
+    comment= models.CharField(max_length =240)
     date_posted = models.DateTimeField(auto_now_add=True)
     post = models.ForeignKey(
         'Post',

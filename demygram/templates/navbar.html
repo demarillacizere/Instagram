@@ -29,6 +29,12 @@
 <nav class="navbar navbar-light" style='position:fixed;'>
   <div class="container-fluid">
     <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
       <div class='col-xs-0 col-sm-0 col-md-2 col-lg-3'></div>
       <a class="navbar-brand" href="{% url 'insta' %}"><i class="fab fa-instagram"></i> Instagram</a>
       <div class="col-sm-4 col-md-5 col-lg-5 nav navbar-center">
@@ -45,6 +51,7 @@
         </form>
     </div>
     </div>
+    <div class="navbar-collapse collapse">
   <div class="col-sm-3 col-md-3 col-lg-3 nav navbar-right">
     {% if user.is_authenticated %}
     <ul class="nav navbar-nav">
@@ -54,7 +61,7 @@
         {% endif %}
         <li><a href="{%url 'new-post'%}" class="nav-link"><i class="fas fa-plus"></i></a></li>
         <li class="dropdown nav-item">
-          <a href="#" class="btn btn-default nav-link" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fas fa-ellipsis-v"></i>
+          <a href="#" class="nav-link" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fas fa-ellipsis-v"></i>
                 </a>
           <ul class="dropdown-menu" role="menu">
             <li>
@@ -71,7 +78,7 @@
     </li>
     </ul>
     {% endif %}
-  </div>
+  </div></div>
 </nav>
 </body>
 </html>

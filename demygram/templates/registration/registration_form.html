@@ -1,10 +1,26 @@
 {%extends "registration/base.html"%} {% load bootstrap3 %}
 {% block content %}
+<style>
+  body{
+    background-image:url(https://lh3.googleusercontent.com/proxy/_uSJkxZ3_qhMj73lr3n1MMzJYMqRl9XsSYxD6p3rNE4s-4-xYT0S2iIkifean8T2mGQZIHF_9BasCiN2vywqqpJZuJ558ZXEkycI49ERvf6reU2bv__9n6AzgV1uy_GEf4Wn8TNAWaIGbvk0Dq1ohKuZ);
+    background-size:cover;
+    background-repeat:no-repeat;
+    font-family: 'Vollkorn', serif;
+  }
+  .col-md-6{
+    border-radius:20px;
+    margin:10px;
+  }
+  .btn{
+    background-color:rgb(182, 72, 209);
+    border:none;
+  }
+</style>
 <div class="container">
   <div class="row">
     <!-- Empty div -->
-    <div class="col-md-4"></div>
-    <div class="col-md-4">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
       {% if form.errors %}
         <p> Some Information Might be Incorrect </p>
       {% endif %}
@@ -19,7 +35,7 @@
             {% csrf_token %}
             {% bootstrap_form form %}
             <div class="form-group">
-              <input type="submit" class="btn btn-primary btn-sm" value="Sign Up">
+              <input type="submit" class="btn btn-primary btn-sm" value="Sign Up"> &nbsp;<span> Already have an account? Click <a href="/accounts/login">here</a> to login</div></span>
             </div>
 
             <input type="hidden" name="next" value="{{next}}">

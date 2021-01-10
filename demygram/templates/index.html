@@ -19,16 +19,17 @@ td{
         top:auto;
     }
 }
+
 </style>
 <div class="container" style='margin-top:90px'>
     <div class="row" id='timeline'>
         <div class="col-xs-0 col-sm-0 col-md-1 col-lg-1"></div>
         <div class="col-md-7 col-lg-7">
-            {% for post in posts_lists %}
+            {% for post in posts %}
             <div class='panel panel-default'>
                <div class='panel-heading'><h5><a href="/profile/{{post.profile.id}}" style='text-decoration: none;'><b>{{post.user}}</a></b><br><small><i class="fas fa-map-marker-alt"></i>{{post.location}}</small></h5></div>
                 <div class='panel-body'>
-                    <img src="{{post.post_image.url}}" width='100%' class="post" alt="post" ><br><br>
+                    <a href="{% url 'single_post' post_id=post.id %}"><img src="{{post.post_image.url}}" width='100%' class="post" alt="post" ></a><br><br>
                     <div>
                         <form action="{%url 'insta' %}" method="post">
                             {% csrf_token %}
@@ -55,18 +56,18 @@ td{
             {% if my_profile %}
             <div class='col-md-3'><img class="img-fluid rounded-circle " src="{{my_profile.profile_photo.url}}" style="height:70px;width:70px;margin-top:5px;margin-bottom:5px; border-radius:50%;"></div>
             <div class='col-md-3'><br><span>{{my_profile.user.username}}</span><br>
-            <a href="{% url 'add_profile' %}">Edit profile</a></div>
+            <a href="#">Edit profile</a></div>
             {% else %}
-            <div class='col-md-3'><a href="{% url 'add_profile' %}" class='btn btn-info'>Add profile</a></div>
+            <div class='col-md-3'><a href="{% url 'add_profile' %}" class='btn btn-info' style='background-color:rgb(205, 57, 241);border:none;'>Add profile</a></div>
             {% endif %}
         </div><br>
         <h5><b>Suggestions for you</b></h5><br>
         <table class='table table-borderless'>
             <tbody>
                 {% for user in users %}
-                {% if user != request.user and user not in follow.profile.user %}
+                {% if user != request.user and user.profile %}
                 <tr>
-                    <th>{{user.username}}</th>
+                    <th><a href="/profile/{{user.profile.id}}" style='text-decoration: none; color:black'>{{user.username}}</a></th>
                     <td><a href="{%url 'follow' user.id %}"><b>Follow</b></a></td>
                 </tr>
                 {% endif %}
