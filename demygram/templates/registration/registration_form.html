@@ -2,18 +2,12 @@
 {% block content %}
 <style>
   body{
-    background-image:url('https://lh3.googleusercontent.com/proxy/6ad6RkWVmYU8TQizxNxmHNhllOowYFClp-3q0Ywzqsj7SdMDlYJ59bXSK69v2RhrE8hr7d-Qz5T7Q1D_iULrszWC-au5QrXNsSes4BViia188DYzDFZ9VRNNtbaOIl16R5ojoowCVzluEMBkneK1httr');
-    background-size:cover;
-    background-repeat:no-repeat;
+    background:linear-gradient(45deg,#405de6,#5851db,#833ab4,#c13584,#e1306c,#fd1d1d);
     font-family: 'Vollkorn', serif;
   }
   .col-md-6{
     border-radius:20px;
     margin-top:30px;
-  }
-  .btn{
-    background-color:rgb(182, 72, 209);
-    border:none;
   }
 </style>
 <div class="container">
@@ -35,7 +29,7 @@
             {% csrf_token %}
             {% bootstrap_form form %}
             <div class="form-group">
-              <input type="submit" class="btn btn-primary btn-sm" value="Sign Up"> &nbsp;<span> Already have an account? Click <a href="/accounts/login">here</a> to login</div></span>
+              <input type="submit" class="btn btn-primary btn-sm" style='width:100%'; value="Sign Up">
             </div>
 
             <input type="hidden" name="next" value="{{next}}">
@@ -45,7 +39,9 @@
         </div>
 
       </div>
-
+      <div class='panel text-center' style='padding:15px;'>
+        <span> Already have an account? Click <a href="/accounts/login">here</a> to login</div></span>
+      </div>
     </div>
     <!-- empty div -->
     <div class="col-md-4"></div>

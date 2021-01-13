@@ -3,16 +3,11 @@
 {% block content %}
 <style>
   body{
-    background-image:url('https://lh3.googleusercontent.com/proxy/6ad6RkWVmYU8TQizxNxmHNhllOowYFClp-3q0Ywzqsj7SdMDlYJ59bXSK69v2RhrE8hr7d-Qz5T7Q1D_iULrszWC-au5QrXNsSes4BViia188DYzDFZ9VRNNtbaOIl16R5ojoowCVzluEMBkneK1httr');
-    background-size:cover;
-    background-repeat:no-repeat;
+    background:linear-gradient(45deg,#405de6,#5851db,#833ab4,#c13584,#e1306c,#fd1d1d);
     font-family: 'Vollkorn', serif;
     height:100vh;
   }
-  .btn{
-    background-color:rgb(182, 72, 209);
-    border:none;
-  }
+  
   .col-md-7{
     margin-top:20vh;
   }
@@ -28,7 +23,7 @@
       <div class="panel panel-default">
 
         <div class="panel-heading">
-          <h3 class="text-center">Sign In To Instagram</h3>
+          <h3 class="text-center">Instagram</h3>
         </div>
         <div class="panel-body">
 
@@ -37,17 +32,16 @@
             {% bootstrap_form form%}
 
             <div class="form-group">
-              <input type="submit" class="btn btn-primary btn-sm" value="Login">
+              <input type="submit" class="btn btn-primary btn-sm" style='width:100%' value="Login">
             </div>
 
             <input type="hidden" name="next" value="{{next}}">
 
           </form>
-          <div>Don't have an account? Register <a href="/accounts/register">here</a></div>
         </div>
-
+        
       </div>
-
+      <div class='panel text-center' style='padding:15px;'>Don't have an account? Register <a href="/accounts/register">here</a></div>
     </div>
     <!-- empty div -->
     <div class="col-md-4"></div></div>
